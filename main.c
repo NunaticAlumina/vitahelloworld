@@ -15,12 +15,17 @@
 #include <psp2/types.h>
 #include <psp2/moduleinfo.h>
 #include <psp2/kernel/processmgr.h>
+#include <psp2/motion.h>
 
 #include "utils.h"
 #include "draw.h"
 
+static SceMotionSensorState mstate;
+
 int main()
 {
+	sceMotionStartSampling();
+
 	init_video();
 
 	/* Enable analog stick */
@@ -50,6 +55,8 @@ int main()
 	while (1) {
 		clear_screen();
 
+		sceMotionGetSensorState(&mstate, 1);
+
 		/* Read controls and touchscreen */
 		sceCtrlPeekBufferPositive(0, &pad, 1);
 		sceTouchPeek(0, &touch, 1);
@@ -62,6 +69,8 @@ int main()
 		font_draw_stringf(SCREEN_W - 160, 10, RGBA8(0, 255, 0, 255), "FPS: %.2f", fps);
 		font_draw_stringf(10, 30, RGBA8(255, 0, 0, 255),
 			"(%3d, %3d) size: (%d, %d) speed: %d\n", x, y, w, h, speed);
+		font_draw_stringf(10, 50, RGBA8(255, 0, 255, 255),
+			"accelerometer x: %f, y: %f", mstate.accelerometer.x, mstate.accelerometer.y);		
 
 		/* Move the rectangle */
 		if (pad.buttons & SCE_CTRL_UP) {

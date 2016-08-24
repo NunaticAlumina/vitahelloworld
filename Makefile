@@ -3,7 +3,7 @@ TARGET   = vitahelloworld
 OBJS     = main.o draw.o font_data.o
 
 LIBS = -lc -lSceKernel_stub -lSceDisplay_stub -lSceGxm_stub	\
-	-lSceCtrl_stub -lSceTouch_stub
+	-lSceCtrl_stub -lSceTouch_stub -lSceMotion_stub
 
 PREFIX  = arm-vita-eabi
 CC      = $(PREFIX)-gcc
@@ -20,7 +20,7 @@ eboot.bin: $(TARGET).velf
 	vita-make-fself $< $@
 
 %.velf: %.elf
-	vita-elf-create $< $@
+	vita-elf-create $< $@ $(VITASDK)/share/db.json
 
 $(TARGET).elf: $(OBJS)
 	$(CC) $(CFLAGS) $^ $(LIBS) -o $@
